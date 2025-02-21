@@ -27,5 +27,5 @@ func main() {
 	// ✅ Swagger Route
 	app.Get("/swagger/*", swagger.HandlerDefault) // This serves Swagger UI
 
-	app.Listen(":3000")
+	app.Listen(":10000")
 }
