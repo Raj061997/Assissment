@@ -29,10 +29,11 @@ func main() {
 		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
 	}))
 	database.ConnectDatabase()
-	router.SetupRoutes(app)
 
 	// ✅ Swagger Route
 	app.Get("/swagger/*", swagger.HandlerDefault) // This serves Swagger UI
+	router.SetupRoutes(app)
+
 	//	log.Printf("Starting server on port %s...", 10000)
 	app.Listen(":10000")
 }
