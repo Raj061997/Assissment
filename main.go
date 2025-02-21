@@ -32,6 +32,6 @@ func main() {
 	}))
 	// ✅ Swagger Route
 	app.Get("/swagger/*", swagger.HandlerDefault) // This serves Swagger UI
-	log.Printf("Starting server on port %s...", port)
+	//	log.Printf("Starting server on port %s...", 10000)
 	app.Listen(":10000")
 }
