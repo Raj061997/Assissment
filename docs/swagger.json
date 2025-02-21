@@ -6,7 +6,7 @@
         "contact": {},
         "version": "1.0"
     },
-    "host": "localhost:3000",
+    "host": "https://assissment-xpx7.onrender.com",
     "basePath": "/api",
     "paths": {
         "/blog-post": {
