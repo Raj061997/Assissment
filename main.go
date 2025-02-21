@@ -24,8 +24,14 @@ func main() {
 	app := fiber.New()
 	database.ConnectDatabase()
 	router.SetupRoutes(app)
+
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*", // Allow all origins (or specify frontend URL)
+		AllowMethods: "GET,POST,PUT,PATCH,DELETE,OPTIONS",
+		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
+	}))
 	// ✅ Swagger Route
 	app.Get("/swagger/*", swagger.HandlerDefault) // This serves Swagger UI
-
+	log.Printf("Starting server on port %s...", port)
 	app.Listen(":10000")
 }
