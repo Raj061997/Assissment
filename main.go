@@ -14,7 +14,7 @@ import (
 // @title Blog CRUD API
 // @version 1.0
 // @description Simple Blog API using Go-Fiber, PostgreSQL, and Swagger
-// @host localhost:3000
+// @host https://assissment-xpx7.onrender.com
 // @BasePath /api
 func main() {
 	err := godotenv.Load()
