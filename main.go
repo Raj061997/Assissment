@@ -29,11 +29,16 @@ func main() {
 		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
 	}))
 	database.ConnectDatabase()
-
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "10000" // Default port if not set
+	}
 	// ✅ Swagger Route
 	app.Get("/swagger/*", swagger.HandlerDefault) // This serves Swagger UI
 	router.SetupRoutes(app)
 
-	//	log.Printf("Starting server on port %s...", 10000)
-	app.Listen(":10000")
+	log.Printf("Starting server on port %s...", port)
+	if err := app.Listen(":" + port); err != nil {
+		log.Fatal("Failed to start server:", err)
+	}
 }
