@@ -1,8 +1,8 @@
 module example
 
-go 1.24
+go 1.23.6
 
-toolchain go1.24.0
+toolchain go1.23.6
 
 require (
 	github.com/DATA-DOG/go-sqlmock v1.5.2
