@@ -1,11 +1,21 @@
 package controller
 
 import (
-	"example/database"
 	"example/models"
+	"example/service"
 	"github.com/gofiber/fiber/v2"
 	"strconv"
 )
+
+type BlogController struct {
+	service service.Service
+}
+
+func NewController(service service.Service) BlogController {
+	return BlogController{
+		service: service,
+	}
+}
 
 // Create a blog post
 // CreatePost creates a new blog post
@@ -18,7 +28,7 @@ import (
 // @Success 201 {object} models.BlogPost
 // @Failure 404 {object} models.ErrorResponse
 // @Router /blog-post [post]
-func CreatePost(c *fiber.Ctx) error {
+func (bc *BlogController) CreatePost(c *fiber.Ctx) error {
 	var req models.CreateBlogRequest
 
 	// Parse request body
@@ -31,15 +41,22 @@ func CreatePost(c *fiber.Ctx) error {
 		return c.Status(400).JSON(models.ErrorResponse{Error: "All fields are required"})
 	}
 
-	// Create a new BlogPost object
-	post := models.BlogPost{
-		Title:       req.Title,
-		Description: req.Description,
-		Body:        req.Body,
-	}
+	// // Create a new BlogPost object
+	// post := models.BlogPost{
+	// 	Title:       req.Title,
+	// 	Description: req.Description,
+	// 	Body:        req.Body,
+	// }
 
-	database.DB.Create(&post)
-	return c.Status(201).JSON(post)
+	// if err := bc.BlogService.Create(&post); err != nil {
+	// 	return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to create blog post"})
+	// }
+	err := bc.service.Create(req)
+	if err != nil {
+		return c.Status(500).JSON(models.ErrorResponse{Error: "unable to create blog"})
+
+	}
+	return c.Status(201).JSON(req)
 }
 
 // Get all blog posts
@@ -50,10 +67,15 @@ func CreatePost(c *fiber.Ctx) error {
 // @Produce json
 // @Success 200 {array} models.BlogPost
 // @Router /blog-post [get]
-func GetPosts(c *fiber.Ctx) error {
-	var posts []models.BlogPost
-	database.DB.Find(&posts)
+func (bc *BlogController) GetPosts(c *fiber.Ctx) error {
+
+	posts, err := bc.service.GetAll()
+
+	if err != nil {
+		return c.Status(404).JSON(models.ErrorResponse{Error: "unable to find blog"})
+	}
 	return c.JSON(posts)
+
 }
 
 // Get a single blog post
@@ -66,14 +88,15 @@ func GetPosts(c *fiber.Ctx) error {
 // @Success 200 {object} models.BlogPost
 // @Failure 404 {object} models.ErrorResponse
 // @Router /blog-post/{id} [get]
-func GetPost(c *fiber.Ctx) error {
+func (bc *BlogController) GetPost(c *fiber.Ctx) error {
 	idParam := c.Params("id")
 	id, err := strconv.Atoi(idParam)
 	if err != nil || id <= 0 {
 		return c.Status(400).JSON(models.ErrorResponse{Error: "Invalid ID parameter"})
 	}
-	var post models.BlogPost
-	if err := database.DB.First(&post, id).Error; err != nil {
+
+	post, err := bc.service.GetByID(uint(id))
+	if err != nil {
 		return c.Status(404).JSON(models.ErrorResponse{Error: "Post not found"})
 	}
 	return c.JSON(post)
@@ -92,34 +115,24 @@ func GetPost(c *fiber.Ctx) error {
 // @Failure 400 {object} models.ErrorResponse
 // @Failure 404 {object} models.ErrorResponse
 // @Router /blog-post/{id} [patch]
-func UpdatePost(c *fiber.Ctx) error {
+func (bc *BlogController) UpdatePost(c *fiber.Ctx) error {
 	idParam := c.Params("id")
 	id, err := strconv.Atoi(idParam)
 	if err != nil || id <= 0 {
 		return c.Status(400).JSON(models.ErrorResponse{Error: "Invalid ID parameter"})
-	}
-	var post models.BlogPost
-	if err := database.DB.First(&post, id).Error; err != nil {
-		return c.Status(404).JSON(models.ErrorResponse{Error: err.Error()})
 	}
 	var req models.UpdateBlogRequest
 
 	if err := c.BodyParser(&req); err != nil {
 		return c.Status(400).JSON(models.ErrorResponse{Error: "invalid request body"})
 	}
-	// Update only provided fields
-	if req.Title != nil {
-		post.Title = *req.Title
-	}
-	if req.Description != nil {
-		post.Description = *req.Description
-	}
-	if req.Body != nil {
-		post.Body = *req.Body
-	}
 
-	database.DB.Save(&post)
+	post, err := bc.service.Update(uint(id), &req)
+	if err != nil {
+		return c.Status(500).JSON(models.ErrorResponse{Error: "unabel to update post"})
+	}
 	return c.JSON(post)
+
 }
 
 // Delete a blog post
@@ -131,16 +144,20 @@ func UpdatePost(c *fiber.Ctx) error {
 // @Success 204 "No Content"
 // @Failure 404 {object} models.ErrorResponse
 // @Router /blog-post/{id} [delete]
-func DeletePost(c *fiber.Ctx) error {
+func (bc *BlogController) DeletePost(c *fiber.Ctx) error {
 	idParam := c.Params("id")
 	id, err := strconv.Atoi(idParam)
 	if err != nil || id <= 0 {
 		return c.Status(400).JSON(models.ErrorResponse{Error: "Invalid ID parameter"})
 	}
-	var post models.BlogPost
-	if err := database.DB.First(&post, id).Error; err != nil {
+
+	_, err = bc.service.GetByID(uint(id))
+	if err != nil {
 		return c.Status(404).JSON(models.ErrorResponse{Error: "Post not found"})
 	}
-	database.DB.Delete(&post)
+	if err := bc.service.Delete(uint(id)); err != nil {
+		return c.Status(500).JSON(models.ErrorResponse{Error: "unable to delete error"})
+	}
 	return c.Status(204).Send(nil)
+
 }
