@@ -14,21 +14,31 @@ type Repository struct {
 }
 
 // Create provides a mock function with given fields: post
-func (_m *Repository) Create(post *models.BlogPost) error {
+func (_m *Repository) Create(post *models.BlogPost) (uint, error) {
 	ret := _m.Called(post)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Create")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(*models.BlogPost) error); ok {
+	var r0 uint
+	var r1 error
+	if rf, ok := ret.Get(0).(func(*models.BlogPost) (uint, error)); ok {
+		return rf(post)
+	}
+	if rf, ok := ret.Get(0).(func(*models.BlogPost) uint); ok {
 		r0 = rf(post)
 	} else {
-		r0 = ret.Error(0)
+		r0 = ret.Get(0).(uint)
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(*models.BlogPost) error); ok {
+		r1 = rf(post)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // Delete provides a mock function with given fields: id

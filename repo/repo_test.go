@@ -59,7 +59,7 @@ func Test_repo_Create(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			r := repo.NewRepo(tt.fields.db)
-			if err := r.Create(tt.args.post); (err != nil) != tt.wantErr {
+			if _, err := r.Create(tt.args.post); (err != nil) != tt.wantErr {
 				t.Errorf("repo.Create() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

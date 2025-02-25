@@ -30,7 +30,7 @@ func Test_service_Create(t *testing.T) {
 			fields: fields{
 				repo: func() repo.Repository {
 					repo := new(mocks.Repository)
-					repo.On("Create", mock.Anything).Return(nil)
+					repo.On("Create", mock.Anything).Return(uint(1), nil)
 					return repo
 				}(),
 			},
@@ -45,7 +45,7 @@ func Test_service_Create(t *testing.T) {
 			s := &service{
 				repo: tt.fields.repo,
 			}
-			if err := s.Create(tt.args.req); (err != nil) != tt.wantErr {
+			if _, err := s.Create(tt.args.req); (err != nil) != tt.wantErr {
 				t.Errorf("service.Create() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

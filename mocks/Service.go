@@ -14,21 +14,31 @@ type Service struct {
 }
 
 // Create provides a mock function with given fields: req
-func (_m *Service) Create(req models.CreateBlogRequest) error {
+func (_m *Service) Create(req models.CreateBlogRequest) (uint, error) {
 	ret := _m.Called(req)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Create")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(models.CreateBlogRequest) error); ok {
+	var r0 uint
+	var r1 error
+	if rf, ok := ret.Get(0).(func(models.CreateBlogRequest) (uint, error)); ok {
+		return rf(req)
+	}
+	if rf, ok := ret.Get(0).(func(models.CreateBlogRequest) uint); ok {
 		r0 = rf(req)
 	} else {
-		r0 = ret.Error(0)
+		r0 = ret.Get(0).(uint)
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(models.CreateBlogRequest) error); ok {
+		r1 = rf(req)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // Delete provides a mock function with given fields: id

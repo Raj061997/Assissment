@@ -41,12 +41,12 @@ func (bc *BlogController) CreatePost(c *fiber.Ctx) error {
 	if err := models.Validate.Struct(req); err != nil {
 		return c.Status(400).JSON(models.ErrorResponse{Error: "All fields are required"})
 	}
-	err := bc.service.Create(req)
+	id, err := bc.service.Create(req)
 	if err != nil {
 		return c.Status(500).JSON(models.ErrorResponse{Error: "unable to create blog"})
 
 	}
-	return c.Status(201).JSON(req)
+	return c.Status(201).JSON(models.BlogPost{ID: id})
 }
 
 // Get all blog posts

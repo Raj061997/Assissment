@@ -2,12 +2,15 @@ package repo
 
 import (
 	"example/models"
+
 	"gorm.io/gorm"
 )
 
 // BlogService defines methods for blog operations.
+//
+//go:generate mockery --name=Repository --outpkg mocks
 type Repository interface {
-	Create(post *models.BlogPost) error
+	Create(post *models.BlogPost) (uint, error)
 	GetAll() ([]models.BlogPost, error)
 	GetByID(id uint) (*models.BlogPost, error)
 	Update(id uint, post *models.BlogPost) error
@@ -24,8 +27,12 @@ func NewRepo(db *gorm.DB) *repo {
 }
 
 // Create a new blog post
-func (r *repo) Create(post *models.BlogPost) error {
-	return r.db.Create(post).Error
+func (r *repo) Create(post *models.BlogPost) (uint, error) {
+	err := r.db.Create(post).Error
+	if err != nil {
+		return 0, err
+	}
+	return post.ID, nil
 }
 
 // Get all blog posts

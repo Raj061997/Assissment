@@ -10,7 +10,7 @@ import (
 //
 //go:generate mockery --name=Service --outpkg mocks
 type Service interface {
-	Create(req models.CreateBlogRequest) error
+	Create(req models.CreateBlogRequest) (uint, error)
 	GetAll() ([]models.BlogPost, error)
 	GetByID(id uint) (*models.BlogPost, error)
 	Update(id uint, post *models.UpdateBlogRequest) (*models.BlogPost, error)
@@ -27,12 +27,13 @@ func NewService(repo repo.Repository) *service {
 }
 
 // Create a new blog post
-func (s *service) Create(req models.CreateBlogRequest) error {
-	return s.repo.Create(&models.BlogPost{
+func (s *service) Create(req models.CreateBlogRequest) (uint, error) {
+	id, err := s.repo.Create(&models.BlogPost{
 		Title:       req.Title,
 		Description: req.Description,
 		Body:        req.Body,
 	})
+	return id, err
 }
 
 // Get all blog posts
