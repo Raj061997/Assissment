@@ -3,12 +3,13 @@ package main
 import (
 	engin "example/cmd/app"
 	_ "example/docs" // Import the generated docs
+	"log"
+	"os"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/swagger" // Import Fiber Swagger
 	"github.com/joho/godotenv"
-	"log"
-	"os"
 )
 
 // @title Blog CRUD API
