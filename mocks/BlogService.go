@@ -14,22 +14,22 @@ type BlogService struct {
 }
 
 // Create provides a mock function with given fields: post
-func (_m *BlogService) Create(post *models.BlogPost) error {
+func (_m *BlogService) Create(post models.CreateBlogRequest) (uint, error) {
 	ret := _m.Called(post)
 
-	if len(ret) == 0 {
-		panic("no return value specified for Create")
+	var r0 uint
+	if ret.Get(0) != nil {
+		r0 = ret.Get(0).(uint)
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(*models.BlogPost) error); ok {
-		r0 = rf(post)
-	} else {
-		r0 = ret.Error(0)
+	var r1 error
+	if ret.Get(1) != nil {
+		r1 = ret.Get(1).(error)
 	}
 
-	return r0
+	return r0, r1
 }
+
 
 // Delete provides a mock function with given fields: id
 func (_m *BlogService) Delete(id uint) error {
@@ -110,22 +110,22 @@ func (_m *BlogService) GetByID(id uint) (*models.BlogPost, error) {
 }
 
 // Update provides a mock function with given fields: id, post
-func (_m *BlogService) Update(id uint, post *models.BlogPost) error {
+func (_m *BlogService) Update(id uint, post *models.UpdateBlogRequest) (*models.BlogPost, error) {
 	ret := _m.Called(id, post)
 
-	if len(ret) == 0 {
-		panic("no return value specified for Update")
+	var r0 *models.BlogPost
+	if ret.Get(0) != nil {
+		r0 = ret.Get(0).(*models.BlogPost)
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(uint, *models.BlogPost) error); ok {
-		r0 = rf(id, post)
-	} else {
-		r0 = ret.Error(0)
+	var r1 error
+	if ret.Get(1) != nil {
+		r1 = ret.Error(1)
 	}
 
-	return r0
+	return r0, r1
 }
+
 
 // NewBlogService creates a new instance of BlogService. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
