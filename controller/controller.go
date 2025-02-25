@@ -46,7 +46,7 @@ func (bc *BlogController) CreatePost(c *fiber.Ctx) error {
 		return c.Status(500).JSON(models.ErrorResponse{Error: "unable to create blog"})
 
 	}
-	return c.Status(201).JSON(models.BlogPost{ID: id})
+	return c.Status(201).JSON(fiber.Map{"id": id})
 }
 
 // Get all blog posts
