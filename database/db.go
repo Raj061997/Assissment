@@ -10,9 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var DB *gorm.DB
-
-func ConnectDatabase() {
+func NewDB() *gorm.DB {
 	dsn := fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
 		os.Getenv("DB_HOST"),
@@ -30,5 +28,5 @@ func ConnectDatabase() {
 	// Migrate the schema
 	database.AutoMigrate(&models.BlogPost{})
 
-	DB = database
+	return database
 }

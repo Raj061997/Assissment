@@ -1,15 +1,15 @@
 package main
 
 import (
-	"example/database"
+	engin "example/cmd/app"
 	_ "example/docs" // Import the generated docs
-	"example/router"
+	"log"
+	"os"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/swagger" // Import Fiber Swagger
 	"github.com/joho/godotenv"
-	"log"
-	"os"
 )
 
 // @title Blog CRUD API
@@ -29,14 +29,14 @@ func main() {
 		AllowMethods: "GET,POST,PUT,PATCH,DELETE,OPTIONS",
 		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
 	}))
-	database.ConnectDatabase()
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "10000" // Default port if not set
 	}
 	// ✅ Swagger Route
 	app.Get("/swagger/*", swagger.HandlerDefault) // This serves Swagger UI
-	router.SetupRoutes(app)
+	engin.SetupRoutes(app)
 
 	log.Printf("Starting server on port %s...", port)
 	if err := app.Listen(":" + port); err != nil {
