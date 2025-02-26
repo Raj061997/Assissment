@@ -149,5 +149,4 @@ func (bc *BlogController) DeletePost(c *fiber.Ctx) error {
 		return c.Status(500).JSON(models.ErrorResponse{Error: "unable to delete error"})
 	}
 	return c.Status(204).Send(nil)
-
 }
